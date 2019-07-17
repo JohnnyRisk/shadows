@@ -32,12 +32,14 @@ class BlenderRender:
             print('max bounces: ', bpy.data.scenes['Scene'].cycles.max_bounces)
             print('Samples: ', bpy.data.scenes['Scene'].cycles.samples)
         bpy.data.scenes["Scene"].render.engine = 'CYCLES'
+        """
         for scene in bpy.data.scenes:
             scene.cycles.device = 'GPU'
         bpy.context.user_preferences.addons['cycles'].preferences.compute_device_type = 'CUDA'
         bpy.context.user_preferences.addons['cycles'].preferences.devices[0].use = True
         if verbose:
             print('after changing settings: ', bpy.context.scene.cycles.device)
+        """
 
     def __wall(self):
         bpy.ops.mesh.primitive_plane_add()

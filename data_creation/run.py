@@ -5,7 +5,7 @@ import os, argparse, subprocess
 parser = argparse.ArgumentParser()
 parser.add_argument('--low',        default=0,              type=int, help='min image index')
 parser.add_argument('--high',       default=2,            type=int, help='max image index')
-parser.add_argument('--repeat',     default=1,              type=int, help='number of renderings per object')
+parser.add_argument('--repeat',     default=3,              type=int, help='number of renderings per object')
 parser.add_argument('--output',     default='output/car/',  type=str, help='save folder')
 parser.add_argument('--script',     default='render.py',    type=str, help='script run within blender')
 parser.add_argument('--include',    default=None,                     help='directory to include in python path')

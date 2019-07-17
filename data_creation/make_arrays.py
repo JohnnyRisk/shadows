@@ -13,12 +13,14 @@ parser.add_argument('--dsm_theta_low', default=-180)
 parser.add_argument('--dsm_theta_high', default=180)
 parser.add_argument('--n_repeat', default=200)
 parser.add_argument('--n_images', default=100)
-parser.add_argument('--top_image', default=True, help='this takes a top view of the image first with default sun and lighting')
+parser.add_argument('--top_image', default=True,
+                    help='this takes a top view of the image first with default sun and lighting')
 parser.add_argument('--save_path', default='arrays/shader.npy')
 args = parser.parse_args()
 
 size = args.n_repeat * args.n_images
 
+#TODO make it so that it takes a shot from above for every turning of the image.
 def random(low, high):
     if type(high) == list:
         params = [np.random.uniform(low=low[ind], high=high[ind]) for ind in range(len(high))]
@@ -50,7 +52,7 @@ if args.top_image:
     params = [spherical2Cartesian(random(args.sun_phi_theta_low, args.sun_phi_theta_high)) + \
               random(args.sun_energy_size_low, args.sun_energy_size_high) + \
               spherical2Cartesian(random(args.camera_phi_theta_low, args.camera_phi_theta_high)) + \
-              [random(args.dsm_theta_low, args.dsm_theta_high)] if (i%args.n_repeat != 0) else default_top \
+              [random(args.dsm_theta_low, args.dsm_theta_high)] if (i % args.n_repeat != 0) else default_top \
               for i in range(size)]
 else:
     params = [spherical2Cartesian(random(args.sun_phi_theta_low, args.sun_phi_theta_high)) + \

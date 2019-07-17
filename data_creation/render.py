@@ -42,6 +42,7 @@ print(sys.path)
 import os, random  # , math, argparse, scipy.io, scipy.stats, time, subprocess, pdb
 import numpy as np
 import bpy
+import time
 ## import repo modules
 from data_creation import BlenderRender, DEMRender, IntrinsicRender
 
@@ -74,7 +75,7 @@ movement_params = np.load(args.array_path)
 blender.sphere([0, 0, 0], 100, label='sphere')
 
 count = args.start
-
+start_time = time.time()
 while count < args.finish:
 
     ## load a new object from the category
@@ -84,22 +85,24 @@ while count < args.finish:
     blender.duplicate('shape', 'shape_normals')
 
     ## render it args.repeat times in different positions and orientations
+    rep_time =time.time()
     for rep in range(args.repeat):
-        movement_param = movement_params[0]
+        movement_param = movement_params[count]
         sun_euler = [0.0] + list(movement_param[3:5])
-        print('movement_param: {}'.format(movement_param))
-        print('sun_euler: {}'.format(sun_euler))
         sun_light_size = list(movement_param[5:7])
-        print('sun_light_size: {}'.format(sun_light_size))
-        print(movement_param[7:10])
         camera_loc = list(128.0 * movement_param[7:10])
         dsm_euler = [0.0, 0.0] + [movement_param[12]]
+        """ print out the parameters for debugging
+        print('movement_param: {}'.format(movement_param))
+        print('sun_euler: {}'.format(sun_euler))
+        print('sun_light_size: {}'.format(sun_light_size))
         print('camera_loc: {}'.format(camera_loc))
         print('dsm_euler: {}'.format(dsm_euler))
+        """
 
         ## get position, orientation, and scale uniformly at random based on high / low from arguments
         # change the camera. This should still be pointing at (0,0,0) because of the constraints
-        print(camera_loc)
+
         blender.translate(['Camera'], camera_loc)
         # this will rotate the sun angle (we use rotation not position because of the way blender does sun
         blender.rotate(['Sun'], sun_euler)
@@ -109,24 +112,19 @@ while count < args.finish:
         # Rotate the shape
         blender.rotate(['shape', 'shape_shading', 'shape_normals'],
                        dsm_euler)
-        objs = bpy.data.objects
-        print('CAMERA')
-        print(objs['Camera'].location)
-        print(objs['Camera'].rotation_euler)
-        print('\n \n \n \n \n \n \n \n')
-        print('SUN')
-        print(objs['Sun'].location)
-        print(objs['Sun'].rotation_euler)
-        print('\n \n \n \n \n \n \n \n')
         ## render the composite image and intrinsic images
         for mode in ['composite', 'albedo', 'depth', 'normals', 'shading', 'mask', 'specular', 'lights']:
             filename = str(count) + '_' + mode
             intrinsic.changeMode(mode)
             blender.write(args.output, filename)
         count += 1
-
+    end_rep = time.time()
     ## delete object
     blender.delete(lambda x: x.name in ['shape', 'shape_shading', 'shape_normals'])
+end_time = time.time()
+
+print('rep time: {}'.format(end_rep-rep_time))
+print('end time: {}'.format(end_time-start_time))
 
 ################################
 ########## Reference ###########
