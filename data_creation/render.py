@@ -115,8 +115,17 @@ while count < args.finish:
         ## render the composite image and intrinsic images
         for mode in ['composite', 'albedo', 'depth', 'normals', 'shading', 'mask', 'specular', 'lights']:
             filename = str(count) + '_' + mode
-            intrinsic.changeMode(mode)
-            blender.write(args.output, filename)
+            ## This is added because world lighting should be used with no sun lighting for albedo
+            if mode=='albedo':
+                blender.world_lighting(2.0)
+                blender.sun(0.0, sun_size)
+                intrinsic.changeMode(mode)
+                blender.write(args.output, filename)
+                blender.world_lighting(0.0)
+                blender.sun(energy, sun_size)
+            else:
+                intrinsic.changeMode(mode)
+                blender.write(args.output, filename)
         count += 1
     end_rep = time.time()
     ## delete object

@@ -35,11 +35,11 @@ def __toRadians(degree):
 
 def spherical2Cartesian(phi_theta, rho=1.0):
     phi, theta = phi_theta
-    phi = __toRadians(phi)
-    theta = __toRadians(theta)
-    x = rho * math.sin(phi) * math.cos(theta)
-    y = rho * math.sin(phi) * math.sin(theta)
-    z = rho * math.cos(phi)
+    phi_r = __toRadians(phi)
+    theta_r = __toRadians(theta)
+    x = rho * math.sin(phi_r) * math.cos(theta_r)
+    y = rho * math.sin(phi_r) * math.sin(theta_r)
+    z = rho * math.cos(phi_r)
     return [x, y, z, phi, theta]
 
 

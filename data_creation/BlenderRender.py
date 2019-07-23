@@ -12,6 +12,9 @@ class BlenderRender:
         self.setup_camera(ortho_scale=self.ortho_scale)
         self.create_sun(energy=0.5, size=0.1)
         bpy.data.worlds['World'].horizon_color = (0, 0, 0)
+        bpy.data.worlds['World'].use_nodes = True
+        bpy.data.worlds['World'].node_tree.nodes['Background'].inputs['Color'].default_value = (0.801, 0.801, 0.801, 1.0)
+        bpy.data.worlds['World'].node_tree.nodes['Background'].inputs['Strength'].default_value = 1
         bpy.data.scenes['Scene'].render.resolution_percentage = 100
         #self.__wall()
 
@@ -170,6 +173,11 @@ class BlenderRender:
         sun_obj = bpy.data.objects['Sun']
         sun_obj.data.shadow_soft_size = sun_size
         sun_obj.data.node_tree.nodes['Emission'].inputs['Strength'].default_value = energy
+
+    def world_lighting(self, strength):
+        world_obj = bpy.data.worlds['World']
+        world_obj.use_nodes = True
+        world_obj.node_tree.nodes['Background'].inputs['Strength'].default_value = strength
 
     def __select(self, function):
         for obj in bpy.data.objects:
